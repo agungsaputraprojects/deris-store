@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { SlidersHorizontal, Search } from "lucide-react";
 import ProductCard from "@/components/shared/product-card";
 import { getProducts } from "@/services/productService";
@@ -76,7 +77,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   Kategori
                 </h3>
                 <div className="space-y-1">
-                  <a
+                  <Link
                     href="/products"
                     className={`block text-sm px-3 py-2 rounded-xl transition-all ${
                       !params.category
@@ -85,9 +86,9 @@ export default async function ProductsPage({ searchParams }: Props) {
                     }`}
                   >
                     Semua Kategori
-                  </a>
+                  </Link>
                   {CATEGORIES.map((cat) => (
-                    <a
+                    <Link
                       key={cat.id}
                       href={`/products?category=${cat.slug}`}
                       className={`flex items-center justify-between text-sm px-3 py-2 rounded-xl transition-all ${
@@ -100,7 +101,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                       <span className="text-xs text-gray-400">
                         {cat.productCount}
                       </span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -127,7 +128,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                         ? `/products${params.category ? `?category=${params.category}` : ""}`
                         : `/products?minPrice=${range.min}${range.max ? `&maxPrice=${range.max}` : ""}${catParam}`;
                     return (
-                      <a
+                      <Link
                         key={range.label}
                         href={href}
                         className={`block text-sm px-3 py-2 rounded-xl transition-all ${
@@ -137,7 +138,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                         }`}
                       >
                         {range.label}
-                      </a>
+                      </Link>
                     );
                   })}
                 </div>
@@ -163,8 +164,8 @@ export default async function ProductsPage({ searchParams }: Props) {
                     const isActive =
                       params.filter === f.value || (!params.filter && !f.value);
                     return (
-                      <a
-                        key={f.value}
+                      <Link
+                        key={f.value || "all"}
                         href={href}
                         className={`block text-sm px-3 py-2 rounded-xl transition-all ${
                           isActive
@@ -173,7 +174,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                         }`}
                       >
                         {f.label}
-                      </a>
+                      </Link>
                     );
                   })}
                 </div>
@@ -242,7 +243,7 @@ export default async function ProductsPage({ searchParams }: Props) {
             {meta && meta.totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mt-10">
                 {Array.from({ length: meta.totalPages }).map((_, i) => (
-                  <a
+                  <Link
                     key={i}
                     href={`/products?page=${i + 1}${params.category ? `&category=${params.category}` : ""}${params.sort ? `&sort=${params.sort}` : ""}`}
                     className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${
@@ -252,7 +253,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     }`}
                   >
                     {i + 1}
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}

@@ -9,6 +9,8 @@ const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
   weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  preload: false,
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -16,6 +18,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   weight: ["300", "400", "500", "600", "700", "800"],
   style: ["normal", "italic"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
