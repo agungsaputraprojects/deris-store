@@ -3,22 +3,27 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingCart, Heart, Search, User, Menu, X, Zap } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
-import { NAV_LINKS } from "@/constants";
-import { cn } from "@/lib/utils";
+
+const NAV_ITEMS = [
+  { href: "/", label: "Beranda" },
+  { href: "/products", label: "Produk" },
+  { href: "/products?filter=new", label: "Kategori" },
+  { href: "/products?filter=sale", label: "Promo" },
+];
 
 export default function Navbar() {
-  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { itemCount } = useCart();
-  const { count: wishlistCount } = useWishlist();
+  const { wishlist } = useWishlist();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -31,14 +36,14 @@ export default function Navbar() {
     if (searchQuery.trim()) {
       router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
-      setSearchQuery("");
+      setIsMobileMenuOpen(false);
     }
   };
 
   return (
     <>
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white text-xs text-center py-2 px-4 font-medium tracking-wide">
+      <div className="bg-orange-600 text-white text-center py-2 px-4 text-xs font-medium">
         <span className="flex items-center justify-center gap-2">
           <Zap className="w-3 h-3" />
           Gratis ongkir untuk pembelian di atas Rp 500.000 · Promo Hari Ini!
@@ -48,138 +53,124 @@ export default function Navbar() {
 
       {/* Main Navbar */}
       <header
-        className={cn(
-          "sticky top-0 z-50 w-full transition-all duration-300",
-          isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md border-b border-gray-100"
-            : "bg-white border-b border-gray-100",
-        )}
+        className={`sticky top-0 z-50 w-full bg-white transition-shadow duration-300 ${
+          isScrolled ? "shadow-md" : "shadow-sm"
+        }`}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center h-16 gap-4">
+        <div className="w-full max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-4 h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-700 rounded-lg flex items-center justify-center shadow-sm">
+              <div className="w-8 h-8 bg-linear-to-br from-orange-500 to-orange-700 rounded-lg flex items-center justify-center shadow-sm">
                 <span className="text-white font-black text-sm">L</span>
               </div>
-              <span className="font-black text-xl tracking-tight text-gray-900">
-                Deris<span className="text-orange-600">Store</span>
+              <span className="font-black text-lg text-gray-900 hidden sm:block">
+                Luxe<span className="text-orange-600">Store</span>
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1 ml-4">
-              {NAV_LINKS.map((link) => (
+            {/* Desktop Nav */}
+            <nav className="hidden lg:flex items-center gap-1 flex-1">
+              {NAV_ITEMS.map((item) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  key={item.href}
+                  href={item.href}
                   className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
                 >
-                  {link.label}
+                  {item.label}
                 </Link>
               ))}
             </nav>
 
-            {/* Search Bar Desktop */}
-            <div className="hidden md:flex flex-1 max-w-md mx-4">
-              <form onSubmit={handleSearch} className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Cari produk, brand, kategori..."
-                  className="pl-10 pr-4 bg-gray-50 border-gray-200 rounded-xl h-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </form>
-            </div>
+            {/* Desktop Search */}
+            <form
+              onSubmit={handleSearch}
+              className="hidden lg:flex flex-1 max-w-sm relative"
+            >
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                type="search"
+                placeholder="Cari produk, brand, kategori..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-4 bg-gray-50 border-gray-200 focus:bg-white text-sm h-9 w-full"
+              />
+            </form>
 
             {/* Actions */}
             <div className="flex items-center gap-1 ml-auto">
               {/* Mobile Search Toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden rounded-xl"
+              <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-all text-gray-600"
               >
-                <Search className="h-5 w-5" />
-              </Button>
+                <Search className="w-5 h-5" />
+              </button>
 
               {/* Wishlist */}
-              <Link href="/wishlist">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-xl"
-                >
-                  <Heart className="h-5 w-5" />
-                  {wishlistCount > 0 && (
-                    <span className="absolute -top-1 -right-1 h-4 w-4 text-[10px] font-bold bg-rose-500 text-white rounded-full flex items-center justify-center">
-                      {wishlistCount > 9 ? "9+" : wishlistCount}
-                    </span>
-                  )}
-                </Button>
+              <Link
+                href="/wishlist"
+                className="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-all text-gray-600"
+              >
+                <Heart className="w-5 h-5" />
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {wishlist.length}
+                  </span>
+                )}
               </Link>
 
               {/* Cart */}
-              <Link href="/cart">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-xl"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  {itemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 h-4 w-4 text-[10px] font-bold bg-orange-600 text-white rounded-full flex items-center justify-center">
-                      {itemCount > 9 ? "9+" : itemCount}
-                    </span>
-                  )}
-                </Button>
+              <Link
+                href="/cart"
+                className="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-all text-gray-600"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {itemCount}
+                  </span>
+                )}
               </Link>
 
-              {/* User */}
-              <Link href="/login" className="hidden sm:block">
-                <Button variant="ghost" size="icon" className="rounded-xl">
-                  <User className="h-5 w-5" />
-                </Button>
-              </Link>
-
-              {/* Login Button Desktop */}
-              <Link href="/login" className="hidden md:block">
+              {/* Login Button - Desktop */}
+              <Link
+                href="/login"
+                className="hidden sm:flex items-center gap-2 ml-1"
+              >
                 <Button
                   size="sm"
-                  className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white"
+                  className="bg-orange-600 hover:bg-orange-700 h-8 px-3 text-xs font-bold"
                 >
                   Masuk
                 </Button>
               </Link>
 
               {/* Mobile Menu Toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden rounded-xl"
+              <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-all text-gray-600"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-5 w-5" />
+                  <X className="w-5 h-5" />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Menu className="w-5 h-5" />
                 )}
-              </Button>
+              </button>
             </div>
           </div>
 
-          {/* Mobile Search */}
+          {/* Mobile Search Bar */}
           {isSearchOpen && (
-            <div className="md:hidden pb-3">
+            <div className="lg:hidden pb-3">
               <form onSubmit={handleSearch} className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
+                  type="search"
                   placeholder="Cari produk..."
-                  className="pl-10 bg-gray-50"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 bg-gray-50 text-sm h-9 w-full"
                   autoFocus
                 />
               </form>
@@ -187,28 +178,28 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t bg-white">
-            <div className="container mx-auto px-4 py-3 space-y-1">
-              {NAV_LINKS.map((link) => (
+          <div className="lg:hidden border-t bg-white w-full">
+            <div className="max-w-7xl mx-auto px-4 py-3 space-y-1">
+              {NAV_ITEMS.map((item) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all"
+                  key={item.href}
+                  href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
+                  className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all"
                 >
-                  {link.label}
+                  {item.label}
                 </Link>
               ))}
-              <div className="pt-2 border-t">
-                <Link href="/login">
-                  <Button
-                    className="w-full bg-orange-600 hover:bg-orange-700"
-                    size="sm"
-                  >
-                    Masuk / Daftar
-                  </Button>
+              <div className="pt-2 border-t mt-2">
+                <Link
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all"
+                >
+                  <User className="w-4 h-4" />
+                  Masuk / Daftar
                 </Link>
               </div>
             </div>

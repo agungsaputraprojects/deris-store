@@ -38,7 +38,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="bg-gray-50 min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
           <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <ShoppingCart className="w-12 h-12 text-gray-300" />
@@ -46,7 +46,7 @@ export default function CartPage() {
           <h2 className="text-2xl font-black text-gray-900 mb-3">
             Keranjang Kosong
           </h2>
-          <p className="text-gray-500 mb-8">
+          <p className="text-gray-500 mb-8 text-sm">
             Mulai tambahkan produk ke keranjang belanja Anda
           </p>
           <Link href="/products">
@@ -60,30 +60,35 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4 py-10">
+    <div className="bg-gray-50 min-h-screen w-full overflow-x-hidden">
+      <div className="w-full max-w-screen-xl mx-auto px-4 py-6 md:py-10">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-black text-gray-900">
+            <h1 className="text-2xl md:text-3xl font-black text-gray-900">
               Keranjang Belanja
             </h1>
-            <p className="text-gray-500 mt-1">{itemCount} item dipilih</p>
+            <p className="text-gray-500 mt-1 text-sm">
+              {itemCount} item dipilih
+            </p>
           </div>
           <Link href="/products">
-            <Button variant="ghost" className="gap-2 text-gray-600">
+            <Button
+              variant="ghost"
+              className="gap-1 text-gray-600 text-sm px-2"
+            >
               <ArrowLeft className="w-4 h-4" />
-              Lanjut Belanja
+              <span className="hidden sm:inline">Lanjut Belanja</span>
             </Button>
           </Link>
         </div>
 
         {/* Free Shipping Progress */}
         {amountToFreeShipping > 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-6 shadow-sm">
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-5 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <Truck className="w-5 h-5 text-orange-600" />
-              <p className="text-sm font-medium text-gray-700">
+              <Truck className="w-4 h-4 text-orange-600 shrink-0" />
+              <p className="text-xs md:text-sm font-medium text-gray-700">
                 Tambah{" "}
                 <span className="text-orange-600 font-bold">
                   {formatCurrency(amountToFreeShipping)}
@@ -99,30 +104,30 @@ export default function CartPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-4 mb-6 flex items-center gap-3">
-            <Truck className="w-5 h-5 text-emerald-600" />
-            <p className="text-sm font-medium text-emerald-700">
+          <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-4 mb-5 flex items-center gap-3">
+            <Truck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <p className="text-xs md:text-sm font-medium text-emerald-700">
               Yeay! Kamu mendapatkan{" "}
               <span className="font-bold">Gratis Ongkir! 🎉</span>
             </p>
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-3">
             {items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5"
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4"
               >
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   {/* Image */}
                   <Link
                     href={`/products/${item.product.slug}`}
                     className="shrink-0"
                   >
-                    <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-gray-50">
+                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-gray-50">
                       <Image
                         src={item.product.images[0]}
                         alt={item.product.name}
@@ -141,27 +146,27 @@ export default function CartPage() {
                           {item.product.brand}
                         </p>
                         <Link href={`/products/${item.product.slug}`}>
-                          <h3 className="font-bold text-gray-900 text-sm leading-snug hover:text-orange-600 transition-colors line-clamp-2">
+                          <h3 className="font-bold text-gray-900 text-xs md:text-sm leading-snug hover:text-orange-600 transition-colors line-clamp-2">
                             {item.product.name}
                           </h3>
                         </Link>
                         {item.product.discount && item.product.discount > 0 && (
-                          <span className="inline-block mt-1.5 bg-rose-100 text-rose-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                          <span className="inline-block mt-1 bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
                             -{item.product.discount}%
                           </span>
                         )}
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="shrink-0 text-gray-400 hover:text-red-500 transition-colors"
+                        className="shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center justify-between mt-3">
                       {/* Quantity */}
-                      <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-1">
+                      <div className="flex items-center gap-1.5 bg-gray-50 rounded-xl p-1 border border-gray-100">
                         <button
                           onClick={() =>
                             updateQuantity(item.id, item.quantity - 1)
@@ -170,7 +175,7 @@ export default function CartPage() {
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-8 text-center font-bold text-sm">
+                        <span className="w-6 text-center font-bold text-sm">
                           {item.quantity}
                         </span>
                         <button
@@ -186,11 +191,11 @@ export default function CartPage() {
 
                       {/* Price */}
                       <div className="text-right">
-                        <p className="font-bold text-gray-900">
+                        <p className="font-bold text-gray-900 text-sm md:text-base">
                           {formatCurrency(item.product.price * item.quantity)}
                         </p>
                         {item.quantity > 1 && (
-                          <p className="text-xs text-gray-400">
+                          <p className="text-[10px] text-gray-400">
                             {formatCurrency(item.product.price)} / item
                           </p>
                         )}
@@ -204,25 +209,25 @@ export default function CartPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-24">
-              <h2 className="font-black text-xl text-gray-900 mb-6">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 lg:sticky lg:top-24">
+              <h2 className="font-black text-lg text-gray-900 mb-5">
                 Ringkasan Pesanan
               </h2>
 
               {/* Coupon */}
-              <div className="mb-6">
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <div className="mb-5">
+                <label className="text-xs font-semibold text-gray-700 mb-2 block">
                   Kode Voucher
                 </label>
                 <div className="flex gap-2">
                   <Input
                     placeholder="Masukkan kode"
-                    className="flex-1 text-sm"
+                    className="flex-1 text-sm h-9"
                   />
                   <Button
                     size="sm"
                     variant="outline"
-                    className="shrink-0 border-orange-200 text-orange-600 hover:bg-orange-50"
+                    className="shrink-0 border-orange-200 text-orange-600 hover:bg-orange-50 h-9 w-9 p-0"
                   >
                     <Tag className="w-4 h-4" />
                   </Button>
@@ -230,7 +235,7 @@ export default function CartPage() {
               </div>
 
               {/* Price Breakdown */}
-              <div className="space-y-3 mb-6 pb-6 border-b">
+              <div className="space-y-2.5 mb-5 pb-5 border-b">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">
                     Subtotal ({itemCount} item)
@@ -264,23 +269,23 @@ export default function CartPage() {
               </div>
 
               {/* Total */}
-              <div className="flex items-center justify-between mb-6">
-                <span className="font-black text-gray-900 text-lg">Total</span>
-                <span className="font-black text-2xl text-orange-600">
+              <div className="flex items-center justify-between mb-5">
+                <span className="font-black text-gray-900">Total</span>
+                <span className="font-black text-xl text-orange-600">
                   {formatCurrency(total)}
                 </span>
               </div>
 
               {/* Checkout Button */}
               <Link href="/checkout">
-                <Button className="w-full gap-2 bg-orange-600 hover:bg-orange-700 h-12 text-base font-bold">
+                <Button className="w-full gap-2 bg-orange-600 hover:bg-orange-700 h-11 text-sm font-bold">
                   Lanjut ke Pembayaran
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
 
               {/* Payment Methods */}
-              <div className="flex items-center justify-center gap-3 mt-4 pt-4 border-t">
+              <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t flex-wrap">
                 {["VISA", "MC", "GoPay", "OVO", "DANA"].map((p) => (
                   <span key={p} className="text-xs text-gray-400 font-medium">
                     {p}
