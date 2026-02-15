@@ -65,7 +65,7 @@ export default function Navbar() {
                 <span className="text-white font-black text-sm">L</span>
               </div>
               <span className="font-black text-lg text-gray-900 hidden sm:block">
-                Luxe<span className="text-orange-600">Store</span>
+                Deris<span className="text-orange-600">Store</span>
               </span>
             </Link>
 
